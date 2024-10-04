@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-image: url("background.jpg");
+      background-size: cover;
+      background-position: center;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .hidden { display: none; }
+    table { margin: 20px auto; border-collapse: collapse; color: white; }
+    td, th { padding: 10px; border: 1px solid #ddd; color: white; }
+    input, button {
+      color: white;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    form {
+      background-color: rgba(0, 0, 0, 0.6); /* Làm nổi bật form bằng nền tối bán trong suốt */
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      display: inline-block;
+      margin-top: 50px;
+    }
+
+    input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid white;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Form đăng nhập -->
+  <div id="loginForm">
+    <h1>Đăng nhập Admin</h1>
+    <form id="login" action="/login" method="POST">
+      <input type="text" name="username" placeholder="Username" required><br>
+      <input type="password" name="password" placeholder="Password" required><br>
+      <button type="submit">Đăng nhập</button>
+    </form>
+  </div>
+
+  <!-- Giao diện quản lý số liệu sau khi đăng nhập -->
+  <div id="adminPanel" class="hidden">
+    <h1>Quản lý Số điện thoại và Số may mắn</h1>
+    <form id="dataForm">
+      <table>
+        <thead>
+          <tr>
+            <th>Số điện thoại</th>
+            <th>Số may mắn</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <script>
+            for (let i = 0; i < 5; i++) {
+              document.write(`
+                <tr>
+                  <td><input type="text" name="phone[]" placeholder="Nhập số điện thoại" required></td>
+                  <td><input type="text" name="luckyNumber[]" placeholder="Nhập số may mắn"></td>
+                  <td><button type="button" onclick="saveRow(this)">Lưu số</button></td>
+                </tr>
+              `);
+            }
+          </script>
+        </tbody>
+      </table>
+      <button type="button" onclick="redirectToSearch()">Tra cứu số may mắn</button>
+    </form>    
+  </div>
+
+  <script>
+    // Kiểm tra đăng nhập thành công
+    document.getElementById('login').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = e.target.username.value;
+      const password = e.target.password.value;
+
+      if (username === 'admin' && password === '1234') {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+      } else {
+        alert('Sai thông tin đăng nhập!');
+      }
+    });
+
+    function saveRow(button) {
+      const row = button.closest('tr');
+      const phone = row.querySelector('input[name="phone[]"]').value;
+      const luckyNumber = row.querySelector('input[name="luckyNumber[]"]').value;
+
+      if (!phone || !luckyNumber) {
+        alert("Hãy nhập số điện thoại và số may mắn.");
+        return;
+      }
+
+      fetch('/saveData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `phone=${encodeURIComponent(phone)}&luckyNumber=${encodeURIComponent(luckyNumber)}`
+      })
+      .then(response => response.text())
+      .then(data => {
+        alert("Đã lưu trữ dữ liệu thành công!");
+        row.querySelectorAll('input').forEach(input => input.setAttribute('disabled', 'true'));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function redirectToSearch() {
+      window.location.href = "/user.html"; 
+    }
+  </script>
+</body>
+</html>
