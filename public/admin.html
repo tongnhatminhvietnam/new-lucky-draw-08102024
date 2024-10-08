@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css"> <!-- Liên kết tới style.css -->
   <style>
     body {
-      background-image: url("background.jpg");
+      background-image: url("./background.jpg");
       background-size: cover;
       background-position: center;
       font-family: Arial, sans-serif;
@@ -48,6 +48,10 @@
       border: 1px solid white;
       color: white;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -62,10 +66,10 @@
   </div>
 
   <!-- Giao diện quản lý số liệu sau khi đăng nhập -->
-  <div id="adminPanel" class="hidden">
+  <div id="adminPanel" class="hidden"> <!-- Ẩn bảng cho tới khi đăng nhập -->
     <h1>Quản lý Số điện thoại và Số may mắn</h1>
     <form id="dataForm">
-      <table>
+      <table id="dataTable">
         <thead>
           <tr>
             <th>Số điện thoại</th>
@@ -74,19 +78,14 @@
           </tr>
         </thead>
         <tbody>
-          <script>
-            for (let i = 0; i < 5; i++) {
-              document.write(`
-                <tr>
-                  <td><input type="text" name="phone[]" placeholder="Nhập số điện thoại" required></td>
-                  <td><input type="text" name="luckyNumber[]" placeholder="Nhập số may mắn"></td>
-                  <td><button type="button" onclick="saveRow(this)">Lưu số</button></td>
-                </tr>
-              `);
-            }
-          </script>
+          <tr>
+            <td><input type="text" name="phone[]" placeholder="Nhập số điện thoại" required></td>
+            <td><input type="text" name="luckyNumber[]" placeholder="Nhập số may mắn"></td>
+            <td><button type="button" onclick="saveRow(this)">Lưu số</button></td>
+          </tr>
         </tbody>
       </table>
+      <button type="button" onclick="addRow()">Thêm hàng</button>
       <button type="button" onclick="redirectToSearch()">Tra cứu số may mắn</button>
     </form>    
   </div>
@@ -99,6 +98,7 @@
       const password = e.target.password.value;
 
       if (username === 'admin' && password === '1234') {
+        // Ẩn form đăng nhập và hiển thị bảng adminPanel sau khi đăng nhập thành công
         document.getElementById('loginForm').classList.add('hidden');
         document.getElementById('adminPanel').classList.remove('hidden');
       } else {
@@ -106,6 +106,7 @@
       }
     });
 
+    // Hàm lưu dữ liệu của hàng nhập
     function saveRow(button) {
       const row = button.closest('tr');
       const phone = row.querySelector('input[name="phone[]"]').value;
@@ -133,6 +134,21 @@
       });
     }
 
+    // Hàm thêm hàng mới
+    function addRow() {
+      const table = document.getElementById('dataTable').querySelector('tbody');
+      const newRow = document.createElement('tr');
+
+      newRow.innerHTML = `
+        <td><input type="text" name="phone[]" placeholder="Nhập số điện thoại" required></td>
+        <td><input type="text" name="luckyNumber[]" placeholder="Nhập số may mắn"></td>
+        <td><button type="button" onclick="saveRow(this)">Lưu số</button></td>
+      `;
+
+      table.appendChild(newRow);
+    }
+
+    // Chuyển hướng tới trang tra cứu số may mắn
     function redirectToSearch() {
       window.location.href = "/user.html"; 
     }
