@@ -3,39 +3,45 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 
-const app = express(); 
+const app = express();
 
 // Cấu hình bodyParser để xử lý POST requests
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Cấu hình đường dẫn tĩnh cho các tệp HTML trong thư mục public
-app.use(express.static(path.join(__dirname, "public")));
+// Cấu hình để phục vụ các tệp tĩnh
+app.use(express.static(path.join(__dirname)));
 
-// Tạo hoặc mở cơ sở dữ liệu SQLite
-let db = new sqlite3.Database(':memory:', (err) => {
+// Kết nối cơ sở dữ liệu SQLite
+let db = new sqlite3.Database('./database.db', (err) => {
   if (err) {
     console.error("Lỗi khi mở cơ sở dữ liệu:", err.message);
   } else {
-    console.log("Kết nối cơ sở dữ liệu SQLite thành công.");
+    console.log("Kết nối cơ sở dữ liệu thành công.");
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+      phone TEXT PRIMARY KEY,
+      luckyNumber TEXT
+    )`);
   }
 });
 
-// Tạo bảng nếu chưa có
-db.run(`CREATE TABLE IF NOT EXISTS users (
-  phone TEXT PRIMARY KEY,
-  luckyNumber TEXT
-)`);
-
-// Route mặc định trả về trang admin.html khi truy cập URL gốc "/"
+// Route mặc định trả về trang admin.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "admin.html"));
+  res.sendFile(path.join(__dirname, "admin.html"));
+});
+
+// Xử lý đăng nhập
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  if (username === "admin" && password === "1234") {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false, message: "Sai thông tin đăng nhập!" });
+  }
 });
 
 // Xử lý lưu số điện thoại và số may mắn
 app.post("/saveData", (req, res) => {
-  const phone = req.body.phone;
-  const luckyNumber = req.body.luckyNumber;
-
+  const { phone, luckyNumber } = req.body;
   if (!phone || !luckyNumber) {
     return res.status(400).send("Dữ liệu không hợp lệ!");
   }
@@ -51,7 +57,6 @@ app.post("/saveData", (req, res) => {
 // Xử lý tra cứu số may mắn
 app.post("/getLuckyNumber", (req, res) => {
   const phone = req.body.phone.trim();
-
   db.get("SELECT luckyNumber FROM users WHERE phone = ?", [phone], (err, row) => {
     if (err) {
       return res.status(500).send("Lỗi cơ sở dữ liệu!");
@@ -59,12 +64,13 @@ app.post("/getLuckyNumber", (req, res) => {
     if (row) {
       res.send(`Số may mắn của bạn là: ${row.luckyNumber}`);
     } else {
-      res.send("Số điện thoại của bạn không có trong danh sách khách mời, liên hệ anh Tống Nhật Minh để được hỗ trợ.");
+      res.send("Số điện thoại không có trong danh sách.");
     }
   });
 });
 
 // Khởi động server
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+app.listen(3000, '0.0.0.0', () => {
+  console.log('Server is running on port 3000');
 });
+
