@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tra cứu số may mắn</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
   <style>
     body {
-      background-image: url("background.jpg");
+      background-image: url("./background.jpg");
       background-size: cover;
       background-position: center;
       font-family: Arial, sans-serif;
-      color: white; /* Toàn bộ chữ sẽ thành màu trắng */
+      color: white;
     }
 
     input {
@@ -36,22 +36,59 @@
     }
 
     form {
-      background-color: rgba(0, 0, 0, 0.6); /* Làm nổi bật form bằng nền tối bán trong suốt */
+      background-color: rgba(0, 0, 0, 0.6);
       padding: 20px;
       border-radius: 10px;
       display: inline-block;
+      margin-top: 50px;
+    }
+
+    @keyframes zoomIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    #result {
+      font-size: 36px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      margin-top: 20px;
+      animation: zoomIn 0.5s ease-in-out;
+      color: yellow;
+    }
+
+    #resultSection {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #phoneForm {
       margin-top: 50px;
     }
   </style>
 </head>
 <body>
   <h1>Tra cứu số may mắn</h1>
-  <p>Vui lòng nhập số điện thoại của bạn:</p>
-  <input type="text" id="phoneInput" placeholder="Nhập số điện thoại">
-  <br>
-  <button type="button" onclick="searchLuckyNumber()">Tra cứu</button>
 
-  <p id="result"></p>
+  <!-- Form nhập số điện thoại -->
+  <div id="phoneForm">
+    <p>Vui lòng nhập số điện thoại của bạn:</p>
+    <input type="text" id="phoneInput" placeholder="Nhập số điện thoại">
+    <br>
+    <button type="button" onclick="searchLuckyNumber()">Tra cứu</button>
+  </div>
+
+  <!-- Phần kết quả -->
+  <div id="resultSection">
+    <p id="result"></p>
+    <button type="button" onclick="goBack()">Quay lại</button>
+  </div>
 
   <script>
     function searchLuckyNumber() {
@@ -71,11 +108,21 @@
       })
       .then(response => response.text())
       .then(data => {
-        document.getElementById('result').innerText = data;
+        const resultElement = document.getElementById('result');
+        resultElement.innerText = data;
+
+        document.getElementById('resultSection').style.display = 'block';
+        document.getElementById('phoneForm').style.display = 'none';
       })
       .catch(error => {
         console.error('Error:', error);
       });
+    }
+
+    function goBack() {
+      document.getElementById('resultSection').style.display = 'none';
+      document.getElementById('phoneForm').style.display = 'block';
+      document.getElementById('phoneInput').value = '';
     }
   </script>
 </body>
