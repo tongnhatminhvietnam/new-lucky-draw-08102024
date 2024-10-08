@@ -1,8 +1,9 @@
 {
   "name": "game-lucky-draw",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",  // Nếu tệp chính là app.js
   "scripts": {
+    "start": "node app.js",  // Thêm dòng này
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
