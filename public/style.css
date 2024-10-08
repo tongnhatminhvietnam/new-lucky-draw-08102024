@@ -1,30 +1,60 @@
+/* Định dạng chung cho toàn bộ trang */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
   margin: 50px;
+  background-image: url("/background.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white;
 }
 
+/* Định dạng cho tiêu đề */
 h1 {
   font-size: 24px;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Tạo bóng cho chữ */
 }
 
+/* Định dạng cho phần form */
 form {
   margin: 20px 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Làm nền tối bán trong suốt */
+  padding: 20px;
+  border-radius: 10px;
+  display: inline-block;
 }
 
+/* Định dạng cho các ô input */
 input {
   padding: 10px;
   margin: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid white;
+  color: white;
+  border-radius: 5px; /* Tạo đường viền bo tròn */
 }
 
+/* Định dạng cho button */
 button {
-  padding: 10px;
+  padding: 10px 20px;
   background-color: #4CAF50;
   color: white;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
+/* Hiệu ứng khi hover button */
 button:hover {
   background-color: #45a049;
+  transition: background-color 0.3s ease; /* Tạo hiệu ứng chuyển màu mượt mà */
+}
+
+/* Định dạng cho kết quả */
+#result {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Tạo bóng cho kết quả */
 }
